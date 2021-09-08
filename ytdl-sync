@@ -1,0 +1,36 @@
+#!/bin/sh
+# ytdl-sync
+
+CONFIG_FILE='/etc/ytdl-sync.json'
+#CONFIG_FILE='ytdl-sync.json'
+
+# TODO: move the archive filename into the config file
+ARCHIVE_FILENAME="archive.txt"
+
+# Time to run downloads for
+# TODO: use systemd service for timeout instead
+#DL_RUNTIME=2m
+
+# Extract settings from the config file (only rootdir so far)
+ROOTDIR=$(jq -r '.settings.rootdir' "$CONFIG_FILE")
+YTDL_DEFAULT_ARGS=$(jq -r '.settings.arguments | join(" ")' "$CONFIG_FILE")
+# Get all targets in csv format
+targets=$(jq -r '."ytdl-targets" | map([.name, .dest, .url] | @csv) | join("\n")' "$CONFIG_FILE" |
+    tr ',' ' ')
+
+#printf "%s\n" "$targets"
+
+printf "Starting youtube-dl...\n"
+
+# shellcheck disable=2086
+printf "%s\n" "$targets" |
+    xargs -n3 sh -c \
+    "name=\"\$0\"; \
+    printf \"Downloading target %s...\\n\" \"\$name\"; \
+    dest=\"$ROOTDIR/\$1\"; \
+    url=\"\$2\"; '$(which youtube-dl)' $YTDL_DEFAULT_ARGS \
+        --output \"\$dest/%(upload_date)s-%(title)s-%(id)s.%(ext)s\" \
+        --download-archive \"\$dest/$ARCHIVE_FILENAME\" \
+        \"\$url\""
+
+printf "Finished!\n"

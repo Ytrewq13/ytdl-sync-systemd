@@ -1,0 +1,10 @@
+[Unit]
+Description=Youtube-dl timer
+After=network.target
+
+[Timer]
+# Daily
+OnCalendar=*-*-* 03:00:00
+
+[Install]
+WantedBy=multi-user.target

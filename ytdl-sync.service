@@ -1,0 +1,7 @@
+[Unit]
+Description=Youtube-dl downloader service
+
+[Service]
+Type=oneshot
+ExecStart=ytdl-sync
+TimeoutStartSec=3h
