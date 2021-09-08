@@ -7,4 +7,6 @@ systemd timeouts to prevent long-running tasks still running during daytime.
 ## TODOs
 
 - Config file
+  - [ ] Allow commas in variables
+  - [ ] Add including external url files
 - [ ] Makefile for installing/uninstalling everything
