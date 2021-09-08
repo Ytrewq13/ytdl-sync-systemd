@@ -4,4 +4,4 @@ Description=Youtube-dl downloader service
 [Service]
 Type=simple
 ExecStart=ytdl-sync
-RuntimeMaxSec=9600
+RuntimeMaxSec=3h
