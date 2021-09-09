@@ -15,7 +15,7 @@ ARCHIVE_FILENAME="archive.txt"
 ROOTDIR=$(jq -r '.settings.rootdir' "$CONFIG_FILE")
 YTDL_DEFAULT_ARGS=$(jq -r '.settings.arguments | join(" ")' "$CONFIG_FILE")
 # Get all targets in csv format
-targets=$(jq -r '."ytdl-targets" | map([.name, .dest, .url] | @csv) | join("\n")' "$CONFIG_FILE" |
+targets=$(jq -r '."ytdl-targets" | map([.name, .dest, .url, .options] | @csv) | join("\n")' "$CONFIG_FILE" |
     tr ',' ' ')
 
 #printf "%s\n" "$targets"
@@ -28,7 +28,9 @@ printf "%s\n" "$targets" |
     "name=\"\$0\"; \
     printf \"Downloading target %s...\\n\" \"\$name\"; \
     dest=\"$ROOTDIR/\$1\"; \
-    url=\"\$2\"; '$(which youtube-dl)' $YTDL_DEFAULT_ARGS \
+    url=\"\$2\"; \
+    opts=\"\$3\"; \
+    '$(which youtube-dl)' $YTDL_DEFAULT_ARGS \$opts \
         --output \"\$dest/%(upload_date)s-%(title)s-%(id)s.%(ext)s\" \
         --download-archive \"\$dest/$ARCHIVE_FILENAME\" \
         \"\$url\""
