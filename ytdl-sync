@@ -24,7 +24,7 @@ printf "Starting youtube-dl...\n"
 
 # shellcheck disable=2086
 printf "%s\n" "$targets" |
-    xargs -n3 sh -c \
+    xargs -n4 sh -c \
     "name=\"\$0\"; \
     printf \"Downloading target %s...\\n\" \"\$name\"; \
     dest=\"$ROOTDIR/\$1\"; \
