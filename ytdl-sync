@@ -1,8 +1,10 @@
 #!/bin/sh
 # ytdl-sync
 
-CONFIG_FILE='/etc/ytdl-sync.json'
-#CONFIG_FILE='ytdl-sync.json'
+CONFIG_FILE="${YTDL_CONFIG_FILE:-/etc/ytdl-sync.json}"
+SCRIPT_FILE="${YTDL_DL_SCRIPT_FILE:-/bin/ytdl-sync.d/target-script.sh}"
+
+YTDL_EXE="yt-dlp"
 
 # TODO: move the archive filename into the config file
 ARCHIVE_FILENAME="archive.txt"
@@ -15,10 +17,16 @@ ARCHIVE_FILENAME="archive.txt"
 ROOTDIR=$(jq -r '.settings.rootdir' "$CONFIG_FILE")
 YTDL_DEFAULT_ARGS=$(jq -r '.settings.arguments | join(" ")' "$CONFIG_FILE")
 # Get all targets in csv format
-targets=$(jq -r '."ytdl-targets" | map([.name, .dest, .url, .options] | @csv) | join("\n")' "$CONFIG_FILE" |
-    tr ',' ' ')
+targets=$(jq -r '."ytdl-targets" | map([.name, .dest, .url, .options] | @csv) | join("\n")' "$CONFIG_FILE")
 
 #printf "%s\n" "$targets"
+#printf "%s" "$targets" | parallel -N4 "$(realpath "$SCRIPT_FILE")"
+#printf "%s\n" "$targets" | cat -vE
+export ROOTDIR
+export YTDL_EXE YTDL_DEFAULT_ARGS ARCHIVE_FILENAME
+printf "%s\n" "$targets" | parallel --line-buffer --csv "$(realpath "$SCRIPT_FILE")" {#} {}
+#echo $targets | parallel "$(realpath "$SCRIPT_FILE")"
+exit
 
 printf "Starting youtube-dl...\n"
 
