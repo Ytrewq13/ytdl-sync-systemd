@@ -3,7 +3,6 @@
 
 CONFIG_FILE="${CONFIG_FILE:-/opt/ytdl-sync-systemd/ytdl-sync.json}"
 SCRIPT_FILE="${SCRIPT_FILE:-/opt/ytdl-sync-systemd/download_target.sh}"
-ROOTDIR="${ROOTDIR:-/media/video/youtube-archive}"
 
 YTDL_EXE="yt-dlp"
 
@@ -17,8 +16,11 @@ ARCHIVE_FILENAME="archive.txt"
 # Extract settings from the config file (default args)
 YTDL_DEFAULT_ARGS=$(jq -r '.settings.arguments | join(" ")' "$CONFIG_FILE")
 
+# Extract rootdirs from config file
+[ -z "$ROOTDIRS" ] && ROOTDIRS=$(jq -r '.settings.rootdirs | join(" ")' "$CONFIG_FILE")
+
 export YTDL_EXE YTDL_DEFAULT_ARGS ARCHIVE_FILENAME
-find "$ROOTDIR" -mindepth 1 -maxdepth 1 -type d |
+find $ROOTDIRS -mindepth 1 -maxdepth 1 -type d |
     parallel --line-buffer "$(realpath "$SCRIPT_FILE")" {} {#}
 # {} is the target dir
 # {#} is the download id
