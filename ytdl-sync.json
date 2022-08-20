@@ -1,7 +1,6 @@
 {
   "settings": {
-    "__comment": "The settings object must include the rootdir variable. Nothing else is required.",
-    "rootdir": "/media/video",
+    "__comment": "The settings object must include the arguments variable. Nothing else is required.",
     "arguments": [
         "--ignore-errors",
         "--ignore-config",
@@ -11,24 +10,10 @@
         "--no-progress",
         "--no-call-home",
         "--write-sub",
-        "--sub-format 'srt/ass/best'",
+        "--sub-format srt/ass/best",
         "--embed-subs",
-    "--format 'best[height<=1440]'",
+    "--format best[height<=1440]",
     "--limit-rate 1M"
     ]
-  },
-  "__targets-comment": [
-      "Each target requires: a 'name', 'dest', and 'url'",
-      "I have plans to ad support for custom youtube-dl arguments for specific",
-      "targets, something like 'options' with an array of strings, like:",
-      "['--standalone-arg', '--arg-with-value', 'value', '-v' ...]"
-  ],
-  "ytdl-targets": [
-    {
-      "name": "Example",
-      "dest": "youtube-archive/Example",
-      "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-      "options": "--dateafter 20190101"
-    }
-  ]
+  }
 }

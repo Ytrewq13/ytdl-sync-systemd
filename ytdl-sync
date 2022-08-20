@@ -1,8 +1,9 @@
 #!/bin/sh
 # ytdl-sync
 
-CONFIG_FILE="${YTDL_CONFIG_FILE:-/etc/ytdl-sync.json}"
-SCRIPT_FILE="${YTDL_DL_SCRIPT_FILE:-/bin/ytdl-sync.d/target-script.sh}"
+CONFIG_FILE="${CONFIG_FILE:-/opt/ytdl-sync-systemd/ytdl-sync.json}"
+SCRIPT_FILE="${SCRIPT_FILE:-/opt/ytdl-sync-systemd/download_target.sh}"
+ROOTDIR="${ROOTDIR:-/media/video/youtube-archive}"
 
 YTDL_EXE="yt-dlp"
 
@@ -13,34 +14,11 @@ ARCHIVE_FILENAME="archive.txt"
 # TODO: use systemd service for timeout instead
 #DL_RUNTIME=2m
 
-# Extract settings from the config file (only rootdir so far)
-ROOTDIR=$(jq -r '.settings.rootdir' "$CONFIG_FILE")
+# Extract settings from the config file (default args)
 YTDL_DEFAULT_ARGS=$(jq -r '.settings.arguments | join(" ")' "$CONFIG_FILE")
-# Get all targets in csv format
-targets=$(jq -r '."ytdl-targets" | map([.name, .dest, .url, .options] | @csv) | join("\n")' "$CONFIG_FILE")
 
-#printf "%s\n" "$targets"
-#printf "%s" "$targets" | parallel -N4 "$(realpath "$SCRIPT_FILE")"
-#printf "%s\n" "$targets" | cat -vE
-export ROOTDIR
 export YTDL_EXE YTDL_DEFAULT_ARGS ARCHIVE_FILENAME
-printf "%s\n" "$targets" | parallel --line-buffer --csv "$(realpath "$SCRIPT_FILE")" {#} {}
-#echo $targets | parallel "$(realpath "$SCRIPT_FILE")"
-exit
-
-printf "Starting youtube-dl...\n"
-
-# shellcheck disable=2086
-printf "%s\n" "$targets" |
-    xargs -n4 sh -c \
-    "name=\"\$0\"; \
-    printf \"Downloading target %s...\\n\" \"\$name\"; \
-    dest=\"$ROOTDIR/\$1\"; \
-    url=\"\$2\"; \
-    opts=\"\$3\"; \
-    '$(which youtube-dl)' $YTDL_DEFAULT_ARGS \$opts \
-        --output \"\$dest/%(upload_date)s-%(title)s-%(id)s.%(ext)s\" \
-        --download-archive \"\$dest/$ARCHIVE_FILENAME\" \
-        \"\$url\""
-
-printf "Finished!\n"
+find "$ROOTDIR" -mindepth 1 -maxdepth 1 -type d |
+    parallel --line-buffer "$(realpath "$SCRIPT_FILE")" {} {#}
+# {} is the target dir
+# {#} is the download id
