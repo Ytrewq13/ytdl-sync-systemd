@@ -6,6 +6,7 @@
         "/media/video/porn"
     ],
     "arguments": [
+        "--write-info-json",
         "--ignore-errors",
         "--ignore-config",
         "--no-cache-dir",
@@ -16,8 +17,8 @@
         "--write-sub",
         "--sub-format srt/ass/best",
         "--embed-subs",
-    "--format best[height<=1440]",
-    "--limit-rate 1M"
+        "--format best[height<=1440]",
+        "--limit-rate 1M"
     ]
   }
 }
