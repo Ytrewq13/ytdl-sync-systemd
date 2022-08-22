@@ -1,0 +1,1 @@
+%(channel)s - %(release_date>%Y-%m-%d,upload_date>%Y-%m-%d)s - %(title)s [%(id)s].%(ext)s

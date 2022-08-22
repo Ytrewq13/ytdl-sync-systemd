@@ -3,7 +3,7 @@
     "__comment": "The settings object must include the arguments variable. Nothing else is required.",
     "rootdirs": [
         "/media/video/youtube-archive",
-        "/media/video/porn"
+        "/media/video/other"
     ],
     "arguments": [
         "--write-info-json",
