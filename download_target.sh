@@ -25,18 +25,11 @@ name="$(sed -n '1p' "$target_file")"
 url="$(sed -n '2p' "$target_file")"
 options="$(sed -n '3p' "$target_file")"
 
-#echo "Name: '$name'"
-#echo "URL: '$url'"
-#echo "Options: '$options'"
-#echo "--output '$dest_template'"
-
-#set -xe
-
-printf "[%04d] Downloading target '%s'...\n" "$download_id" "$name"
+printf "[%04d] Downloading target '%s'...\n" "$target_id" "$name"
 
 $(which "$YTDL_EXE") $YTDL_DEFAULT_ARGS $options \
     --output "$dest_template" \
     --download-archive "$target_dir/$ARCHIVE_FILENAME" \
     "$url"
 
-printf "[%04d] Finished.\n" "$download_id"
+printf "[%04d] Finished.\n" "$target_id"
