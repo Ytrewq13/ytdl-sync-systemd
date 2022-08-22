@@ -6,7 +6,6 @@
         "/media/video/other"
     ],
     "arguments": [
-        "--write-info-json",
         "--ignore-errors",
         "--ignore-config",
         "--no-cache-dir",
@@ -14,9 +13,13 @@
         "--continue",
         "--no-progress",
         "--no-call-home",
+        "--write-info-json",
         "--write-sub",
         "--sub-format srt/ass/best",
         "--embed-subs",
+        "--embed-thumbnail",
+        "--embed-chapters",
+        "--embed-metadata",
         "--format best[height<=1440]",
         "--limit-rate 1M"
     ]
